@@ -17,7 +17,7 @@
  */
 class Twig_Environment
 {
-    const VERSION = '1.12.0-RC1';
+    const VERSION = '1.12.0';
 
     protected $charset;
     protected $loader;
@@ -873,6 +873,26 @@ class Twig_Environment
     }
 
     /**
+     * Gets a test by name.
+     *
+     * @param string $name The test name
+     *
+     * @return Twig_Test|false A Twig_Test instance or false if the test does not exist
+     */
+    public function getTest($name)
+    {
+        if (!$this->extensionInitialized) {
+            $this->initExtensions();
+        }
+
+        if (isset($this->tests[$name])) {
+            return $this->tests[$name];
+        }
+
+        return false;
+    }
+
+    /**
      * Registers a Function.
      *
      * @param string|Twig_SimpleFunction                 $name     The function name or a Twig_SimpleFunction instance
@@ -972,8 +992,14 @@ class Twig_Environment
      */
     public function addGlobal($name, $value)
     {
-        if (($this->extensionInitialized || $this->runtimeInitialized) && !array_key_exists($name, $this->globals)) {
-            throw new LogicException(sprintf('Unable to add global "%s" as the runtime or the extensions have already been initialized.', $name));
+        if ($this->extensionInitialized || $this->runtimeInitialized) {
+            if (null === $this->globals) {
+                $this->initGlobals();
+            }
+            
+            if (!array_key_exists($name, $this->globals)) {
+                throw new LogicException(sprintf('Unable to add global "%s" as the runtime or the extensions have already been initialized.', $name));
+            }
         }
 
         if ($this->extensionInitialized || $this->runtimeInitialized) {
