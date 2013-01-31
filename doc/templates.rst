@@ -217,7 +217,7 @@ the values you pass as arguments:
     {{ data|convert_encoding(from='iso-2022-jp', to='UTF-8') }}
 
 Named arguments also allow you to skip some arguments for which you don't want
-to change the default value::
+to change the default value:
 
 .. code-block:: jinja
 
@@ -445,6 +445,8 @@ Escaping works by piping the variable through the
 By default, the ``escape`` filter uses the ``html`` strategy, but depending on
 the escaping context, you might want to explicitly use any other available
 strategies:
+
+.. code-block:: jinja
 
     {{ user.username|e('js') }}
     {{ user.username|e('css') }}
